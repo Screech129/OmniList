@@ -13,7 +13,7 @@ namespace OmniList.Helpers
     public class DbHelper
     {
         private static MobileServiceClient Client => InitializerHelper.Client;
-        private bool initialized;
+        private bool initialized = true;
         private static IMobileServiceSyncTable<Grocery> ToDoTable => Client.GetSyncTable<Grocery>();
 
         public DbHelper ()
@@ -61,6 +61,7 @@ namespace OmniList.Helpers
             }
             catch (Exception e)
             {
+                initialized = false;
                 Debug.WriteLine(e.ToString());
                 throw;
             }
@@ -69,20 +70,12 @@ namespace OmniList.Helpers
 
         public async Task Insert (Grocery item)
         {
-            try
-            {
-                if (!initialized)
+           if (!initialized)
                 {
                     await Initialize();
                 }
                 await ToDoTable.InsertAsync(item);
                 await Refresh();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-                throw;
-            }
         }
 
         public async Task<List<Grocery>> Get ()

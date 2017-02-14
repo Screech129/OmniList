@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<uses-sdk android:minSdkVersion="15" />
-	<application android:label="OmniList.Droid"></application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:theme="@android:style/Theme.Material.Light" package="com.silverlining.omnilist" android:versionCode="0" android:versionName="Alpha">
+	<uses-sdk android:minSdkVersion="21" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<application android:label="OmniList.Droid" android:icon="@drawable/icon"></application>
 </manifest>

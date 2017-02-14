@@ -9,6 +9,7 @@ using omnilistService.Models;
 
 namespace omnilistService.Controllers
 {
+    [Authorize]
     public class GroceryController : TableController<Grocery>
     {
         protected override void Initialize(HttpControllerContext controllerContext)

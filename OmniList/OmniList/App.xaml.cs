@@ -2,23 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
+using OmniList.Views;
 using Xamarin.Forms;
 
 namespace OmniList
 {
+    public interface IAuthenticate
+    {
+        Task<bool> Authenticate ();
+    }
     public partial class App : Application
     {
+        public static IAuthenticate Authenticator { get; private set; }
+
+        public static void Init(IAuthenticate authenticator)
+        {
+            Authenticator = authenticator;
+        }
         public App ()
         {
             InitializeComponent();
-
-            MainPage = new OmniList.MainPage();
+            MainPage = new GroceryList();
+            
+           
         }
 
         protected override void OnStart ()
         {
             // Handle when your app starts
+          
         }
 
         protected override void OnSleep ()

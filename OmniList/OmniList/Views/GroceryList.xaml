@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="OmniList.Views.GroceryList"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:OmniList.ViewModels;assembly=OmniList">
+    <ContentPage.BindingContext>
+        <viewModels:GroceryListViewModel />
+    </ContentPage.BindingContext>
+    <StackLayout>
+        <Button
+            x:Name="LoginButton"
+            Clicked="LoginButton_OnClicked"
+            Text="Sign In" />
+        <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+            <Entry Text="{Binding NewItem}" WidthRequest="300" />
+            <Button Command="{Binding AddItem}" Text="Add" />
+        </StackLayout>
+        <ListView
+            x:Name="GroceryListView"
+            IsPullToRefreshEnabled="True"
+            IsRefreshing="{Binding IsRefreshing}"
+            ItemsSource="{Binding GroceryCollection}"
+            RefreshCommand="{Binding OnRefreshing}"
+            SelectedItem="{Binding SelectedItem}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
