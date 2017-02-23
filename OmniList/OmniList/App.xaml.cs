@@ -5,25 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using OmniList.Views;
 using Xamarin.Forms;
+using OmniList.Helpers;
 
 namespace OmniList
 {
-    public interface IAuthenticate
+  
+    public partial class App
     {
-        Task<bool> Authenticate ();
-    }
-    public partial class App : Application
-    {
-        public static IAuthenticate Authenticator { get; private set; }
+        public static bool LoggedIn { get; set; }
 
-        public static void Init(IAuthenticate authenticator)
-        {
-            Authenticator = authenticator;
-        }
+        public static string AppName => "OmniList";
+
+       
         public App ()
         {
+            
             InitializeComponent();
-            MainPage = new GroceryList();
+            if (!AuthStore.IsUserLoggedIn())
+            {
+                MainPage = new NavigationPage(new MainPage());
+            }
+            else
+            {                
+                MainPage = new NavigationPage(new GroceryList());
+            }
             
            
         }

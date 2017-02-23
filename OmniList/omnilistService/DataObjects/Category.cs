@@ -6,16 +6,18 @@ using System.Linq;
 using System.Web;
 using Microsoft.Azure.Mobile.Server;
 using Microsoft.Azure.Mobile.Server.Tables;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace omnilistService.DataObjects
 {
-    public class Grocery:EntityData
+    public class Category:EntityData
     {
+        public Category()
+        {
+            Groceries = new List<Grocery>();
+        }
         public string Name { get; set; }
-        public string UserId { get; set; }
-        public bool Removed { get; set; }
-        public string CategoryId { get; set; }
-        public virtual Category Category { get; set; }
+        public virtual ICollection< Grocery> Groceries { get; set; }
 
     }
 }

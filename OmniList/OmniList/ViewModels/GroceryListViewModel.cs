@@ -5,9 +5,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.WindowsAzure.MobileServices;
 using OmniList.Helpers;
 using OmniList.Models;
 using Xamarin.Forms;
@@ -18,6 +20,8 @@ namespace OmniList.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly DbHelper dbHelper = new DbHelper();
+
+        public string User => InitializerHelper.Client.CurrentUser.UserId;
 
         private bool removed;
         public bool Removed
@@ -107,7 +111,8 @@ namespace OmniList.ViewModels
 
         public async Task PopulateList ()
         {
-            //await dbHelper.TestData();
+
+            await RefreshList();
             var groceryList = await dbHelper.Get();
             GroceryCollection = new ObservableCollection<Grocery>(groceryList.Where(x => x.Removed == false));
         }
@@ -119,7 +124,8 @@ namespace OmniList.ViewModels
             {
                 Removed = false,
                 Name = NewItem,
-                CategoryId = 0
+                CategoryId = "a11654fd-3652-45fc-9dfc-14202054ccca",
+                UserId = User
 
             };
             try

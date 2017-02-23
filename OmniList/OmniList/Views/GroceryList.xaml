@@ -8,10 +8,6 @@
         <viewModels:GroceryListViewModel />
     </ContentPage.BindingContext>
     <StackLayout>
-        <Button
-            x:Name="LoginButton"
-            Clicked="LoginButton_OnClicked"
-            Text="Sign In" />
         <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
             <Entry Text="{Binding NewItem}" WidthRequest="300" />
             <Button Command="{Binding AddItem}" Text="Add" />

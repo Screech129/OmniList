@@ -16,47 +16,21 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.WindowsAzure.MobileServices;
 using OmniList.Helpers;
+using OmniList.UWP;
+using Xamarin.Auth;
 
 namespace OmniList.UWP
 {
-    public sealed partial class MainPage: IAuthenticate
+
+    public sealed partial class MainPage
     {
-        private MobileServiceUser user;
         public MainPage ()
         {
             this.InitializeComponent();
-            OmniList.App.Init(this);
             LoadApplication(new OmniList.App());
         }
 
-        public async Task<bool> Authenticate()
-        {
-            string message = string.Empty;
-            var success = false;
-
-            try
-            {
-                if (user == null)
-                {
-                    await InitializerHelper.Initialize();
-                    user = await InitializerHelper.Client.LoginAsync(MobileServiceAuthenticationProvider.Google);
-                    if (user != null)
-                    {
-                        success = true;
-                        message = string.Format("You are now signed-in as {0}.", user.UserId);
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                message = string.Format("Authentication Failed: {0}", ex.Message);
-            }
-
-            // Display the success or failure message.
-            await new MessageDialog(message, "Sign-in result").ShowAsync();
-
-            return success;
-        }
+      
+       
     }
 }

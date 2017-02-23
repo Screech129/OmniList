@@ -4,10 +4,20 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:OmniList">
+    <StackLayout VerticalOptions="StartAndExpand">
+        <Button
+            x:Name="AzureLogin"
+            Clicked="LoginButton_OnClicked"
+            Text="New Account" />
+        <Button
+            x:Name="GoogleLogin"
+            Clicked="LoginButton_OnClicked"
+            Text="Google" />
+        <Button
+            x:Name="FacebookLogin"
+            Clicked="LoginButton_OnClicked"
+            Text="Facebook" />
+    </StackLayout>
 
-    <Label
-        HorizontalOptions="Center"
-        Text="Welcome to Xamarin Forms!"
-        VerticalOptions="Center" />
 
 </ContentPage> 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using OmniList.Models;
+using Xamarin.Forms;
 
 namespace OmniList.Helpers
 {
@@ -32,5 +33,43 @@ namespace OmniList.Helpers
 
 
         }
+
+        public static async Task LoginAsync(MobileServiceAuthenticationProvider provider)
+        {
+            await Initialize();
+            var authenticator = DependencyService.Get<IAuthenticate>();
+            try
+            {
+               await authenticator.LoginAsync(Client,provider);
+               var user = Client.CurrentUser;
+               AuthStore.CacheAuthenticationToken(user);
+            }
+            catch (Exception e)
+            {
+                
+                Debug.WriteLine(e.ToString());
+            }
+        }
+
+        private static List<AppServiceIdentity> identities = null;
+
+        public static async Task<AppServiceIdentity> GetIdentityAsync ()
+        {
+            if (Client.CurrentUser == null || Client.CurrentUser?.MobileServiceAuthenticationToken == null)
+            {
+                throw new InvalidOperationException("Not Authenticated");
+            }
+
+            if (identities == null)
+            {
+                identities = await Client.InvokeApiAsync<List<AppServiceIdentity>>("/.auth/me");
+            }
+
+            if (identities.Count > 0)
+                return identities[0];
+            return null;
+        }
+
+      
     }
 }

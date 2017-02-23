@@ -6,15 +6,20 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android.Util;
 using Microsoft.WindowsAzure.MobileServices;
+using OmniList.Droid;
+using OmniList.Droid.Services;
 using OmniList.Helpers;
+using Xamarin.Auth;
+using Xamarin.Forms;
 
 namespace OmniList.Droid
 {
     [Activity(Label = "OmniList", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, IAuthenticate
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        private MobileServiceUser user;
+
         protected override void OnCreate (Bundle bundle)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -23,42 +28,14 @@ namespace OmniList.Droid
             base.OnCreate(bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
-            App.Init((IAuthenticate)this);
-
-            Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
-
+         
+            CurrentPlatform.Init();
+            ((DroidAuthenticator) DependencyService.Get<IAuthenticate>()).Init(this);
 
             LoadApplication(new App());
         }
 
-        public async Task<bool> Authenticate()
-        {
-            var success = false;
-            var message = string.Empty;
-
-            try
-            {
-                await InitializerHelper.Initialize();
-                user = await InitializerHelper.Client.LoginAsync(this, MobileServiceAuthenticationProvider.Google);
-                if (user != null)
-                {
-                    message = string.Format($"Your are now signed in as {user.UserId}");
-                    success = true;
-                }
-            }
-            catch (Exception e)
-            {
-                message = e.Message;
-                
-            }
-
-            var builder = new AlertDialog.Builder(this);
-            builder.SetMessage(message);
-            builder.SetTitle("Sign-in result");
-            builder.Create().Show();
-
-            return success;
-        }
+       
     }
 }
 

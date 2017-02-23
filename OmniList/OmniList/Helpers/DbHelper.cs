@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices;
@@ -24,9 +25,26 @@ namespace OmniList.Helpers
         {
             try
             {
+                if (!initialized)
+                {
+                    await Initialize();
+                }
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    await ToDoTable.PullAsync(null, null, null, CancellationToken.None);
+                    try
+                    {
+                        await ToDoTable.PullAsync(null, null, null, CancellationToken.None);
+
+                    }
+                    catch (MobileServicePushFailedException ex)
+                    {
+                        Debug.WriteLine(ex.PushResult);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e);
+                        throw;
+                    }
                 }
                 else
                 {
@@ -51,7 +69,16 @@ namespace OmniList.Helpers
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    await ToDoTable.PullAsync(null, null, null, CancellationToken.None);
+                    try
+                    {
+                        await ToDoTable.PullAsync(null, null, null, CancellationToken.None);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e);
+                        throw;
+                    }
                 }
                 else
                 {
@@ -70,12 +97,21 @@ namespace OmniList.Helpers
 
         public async Task Insert (Grocery item)
         {
-           if (!initialized)
-                {
-                    await Initialize();
-                }
+            if (!initialized)
+            {
+                await Initialize();
+            }
+            try
+            {
                 await ToDoTable.InsertAsync(item);
                 await Refresh();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
+            }
+
         }
 
         public async Task<List<Grocery>> Get ()
@@ -84,6 +120,7 @@ namespace OmniList.Helpers
             {
                 await Initialize();
             }
+
             return await ToDoTable.ToListAsync();
         }
 

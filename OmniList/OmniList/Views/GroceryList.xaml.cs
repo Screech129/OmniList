@@ -11,7 +11,6 @@ namespace OmniList.Views
 {
     public partial class GroceryList : ContentPage
     {
-        private bool authenticated = false;
         public GroceryList ()
         {
             InitializeComponent();
@@ -21,17 +20,13 @@ namespace OmniList.Views
         protected override async void OnAppearing ()
         {
             base.OnAppearing();
+            await InitializerHelper.Initialize();
             var vm = BindingContext as GroceryListViewModel;
-            if (authenticated)
-            {
+            var user = await AuthStore.GetUserFromCache();
+            InitializerHelper.Client.CurrentUser = user;
                 if (vm != null) await vm.PopulateList();
-                LoginButton.IsVisible = false;
-            }
+
         }
-
-
-
-
 
         private async Task CompleteItem ()
         {
@@ -39,16 +34,6 @@ namespace OmniList.Views
             if (vm != null) await vm.RemoveItem();
         }
 
-        private async void LoginButton_OnClicked (object sender, EventArgs e)
-        {
-            if (App.Authenticator != null)
-                authenticated = await App.Authenticator.Authenticate();
-
-            if (authenticated)
-            {
-                var vm = BindingContext as GroceryListViewModel;
-                if (vm != null) await vm.PopulateList();
-            }
-        }
+      
     }
 }
