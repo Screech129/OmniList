@@ -11,6 +11,7 @@ using Microsoft.WindowsAzure.MobileServices;
 using OmniList.Droid;
 using OmniList.Droid.Services;
 using OmniList.Helpers;
+using Plugin.SecureStorage;
 using Xamarin.Auth;
 using Xamarin.Forms;
 
@@ -32,6 +33,7 @@ namespace OmniList.Droid
             CurrentPlatform.Init();
             ((DroidAuthenticator) DependencyService.Get<IAuthenticate>()).Init(this);
 
+            SecureStorageImplementation.StoragePassword = "P@ssword!";
             LoadApplication(new App());
         }
 

@@ -17,7 +17,7 @@ using Xamarin.Auth;
 [assembly: Xamarin.Forms.Dependency(typeof(DroidAuthenticator))]
 namespace OmniList.Droid.Services
 {
-    public class DroidAuthenticator : IAuthenticate
+    public class DroidAuthenticator: IAuthenticate
     {
         private Context context;
         public void Init (Context context)
@@ -29,11 +29,6 @@ namespace OmniList.Droid.Services
         {
             await client.LoginAsync(context, provider);
 
-        }
-
-        public AccountStore GetAccountStore ()
-        {
-            return AccountStore.Create();
         }
 
         public async Task LogoutAsync ()

@@ -18,11 +18,6 @@ namespace OmniList.UWP.Services
             await client.LoginAsync(provider);
         }
 
-        public AccountStore GetAccountStore ()
-        {
-            return AccountStore.Create();
-        }
-
         public async Task LogoutAsync ()
         {
             AuthStore.DeleteTokenCache();

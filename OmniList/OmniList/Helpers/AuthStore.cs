@@ -6,112 +6,67 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
-using Xamarin.Auth;
+using Plugin.SecureStorage;
 using Xamarin.Forms;
 
 namespace OmniList.Helpers
 {
     public class AuthStore
     {
+       
         private static string TokenKeyName = "token";
-
-        public static void CacheAuthenticationToken(MobileServiceUser user)
-        {
-            var account = new Account(user.UserId);
-
-            account.Properties.Add(TokenKeyName,user.MobileServiceAuthenticationToken);
-            GetAccountStore().Save(account, App.AppName);
-
+        private static string UserName = "username";
+        public static void CacheAuthenticationToken (MobileServiceUser user)
+        {            
+            CrossSecureStorage.Current.SetValue(TokenKeyName, user.MobileServiceAuthenticationToken);
+            CrossSecureStorage.Current.SetValue(UserName, user.UserId);
             Debug.WriteLine($"Cached auth token: {user.MobileServiceAuthenticationToken}");
         }
         public static async Task<MobileServiceUser> GetUserFromCache ()
         {
-            var accounts = GetAccountStore().FindAccountsForService(App.AppName);
-
-            if (accounts == null)
-            {
-                return null;
-            }
+         
             try
             {
-                foreach (var acct in accounts)
-                {
-                    string token;
 
-                    if (acct.Properties.TryGetValue("token", out token))
+                    if (CrossSecureStorage.Current.HasKey(TokenKeyName))
                     {
+                        var token = CrossSecureStorage.Current.GetValue(TokenKeyName);
+                        var userName = CrossSecureStorage.Current.GetValue(UserName);
                         if (!IsTokenExpired(token))
-                        {
-                            Debug.WriteLine("TEST");
+                        {                        
                             await InitializerHelper.Initialize();
-                            InitializerHelper.Client.CurrentUser = new MobileServiceUser(acct.Username)
+                            InitializerHelper.Client.CurrentUser = new MobileServiceUser(userName)
                             {
                                 MobileServiceAuthenticationToken = token
                             };
                             return InitializerHelper.Client.CurrentUser;
                         }
                     }
-                }
+                
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
                 throw;
             }
-            
+
 
             return null;
         }
 
-        public static bool IsUserLoggedIn()
+        public static bool IsUserLoggedIn ()
         {
-            var accounts = GetAccountStore().FindAccountsForService(App.AppName);
-
-            if (accounts == null)
-            {
-                return false;
-            }
-            try
-            {
-                foreach (var acct in accounts)
-                {
-                    string token;
-
-                    if (acct.Properties.TryGetValue("token", out token))
-                    {
-                        if (!IsTokenExpired(token))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-                throw;
-            }
-
-            return false;
+            return CrossSecureStorage.Current.HasKey(TokenKeyName);
         }
 
         public static void DeleteTokenCache ()
         {
-            var accountStore = GetAccountStore();
-            var account = accountStore.FindAccountsForService(App.AppName).FirstOrDefault();
-            if (account != null)
-            {
-                accountStore.Delete(account, App.AppName);
-            }
+            CrossSecureStorage.Current.DeleteKey(TokenKeyName);
+            CrossSecureStorage.Current.DeleteKey(UserName);
         }
 
-        private static AccountStore GetAccountStore()
-        {
-            
-            return DependencyService.Get<IAuthenticate>().GetAccountStore();
-        }
-
-        private static bool IsTokenExpired (string token)
+       
+        public static bool IsTokenExpired (string token)
         {
             // Get just the JWT part of the token (without the signature).
             var jwt = token.Split(new Char[] { '.' })[1];

@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.WindowsAzure.MobileServices;
 using OmniList.Helpers;
 using OmniList.UWP;
+using Plugin.SecureStorage;
 using Xamarin.Auth;
 
 namespace OmniList.UWP
@@ -27,6 +28,7 @@ namespace OmniList.UWP
         public MainPage ()
         {
             this.InitializeComponent();
+            WinSecureStorageBase.StoragePassword = "P@ssword!";
             LoadApplication(new OmniList.App());
         }
 

@@ -26,11 +26,11 @@ namespace OmniList
                 MainPage = new NavigationPage(new MainPage());
             }
             else
-            {                
+            {
                 MainPage = new NavigationPage(new GroceryList());
             }
-            
-           
+
+
         }
 
         protected override void OnStart ()

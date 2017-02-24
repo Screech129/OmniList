@@ -19,11 +19,6 @@ namespace OmniList.iOS.Services
             await client.LoginAsync(RootView, provider);
         }
 
-        public AccountStore GetAccountStore ()
-        {
-            return AccountStore.Create();
-        }
-
         public async Task LogoutAsync ()
         {
             AuthStore.DeleteTokenCache();

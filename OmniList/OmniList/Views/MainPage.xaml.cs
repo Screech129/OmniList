@@ -31,10 +31,13 @@ namespace OmniList.Views
                     break;
 
             }
-            await InitializerHelper.LoginAsync(provider);
-            await Task.Delay(100);
-            Navigation.InsertPageBefore(new NavigationPage(new GroceryList()),this);
-            await Navigation.PopAsync();
+            if (await InitializerHelper.LoginAsync(provider))
+            {
+                await Task.Delay(100);
+                Navigation.InsertPageBefore(new NavigationPage(new GroceryList()), this);
+                await Navigation.PopAsync();
+            }
+
 
         }
     }

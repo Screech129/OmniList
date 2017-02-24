@@ -34,20 +34,21 @@ namespace OmniList.Helpers
 
         }
 
-        public static async Task LoginAsync(MobileServiceAuthenticationProvider provider)
+        public static async Task<bool> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
             await Initialize();
             var authenticator = DependencyService.Get<IAuthenticate>();
             try
             {
-               await authenticator.LoginAsync(Client,provider);
-               var user = Client.CurrentUser;
-               AuthStore.CacheAuthenticationToken(user);
+                await authenticator.LoginAsync(Client, provider);
+                var user = Client.CurrentUser;
+                AuthStore.CacheAuthenticationToken(user);
+                return true;
             }
             catch (Exception e)
             {
-                
                 Debug.WriteLine(e.ToString());
+                return false;
             }
         }
 
@@ -55,7 +56,7 @@ namespace OmniList.Helpers
 
         public static async Task<AppServiceIdentity> GetIdentityAsync ()
         {
-            if (Client.CurrentUser == null || Client.CurrentUser?.MobileServiceAuthenticationToken == null)
+            if (Client.CurrentUser?.MobileServiceAuthenticationToken == null)
             {
                 throw new InvalidOperationException("Not Authenticated");
             }

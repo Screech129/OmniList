@@ -22,8 +22,7 @@ namespace OmniList.Views
             base.OnAppearing();
             await InitializerHelper.Initialize();
             var vm = BindingContext as GroceryListViewModel;
-            var user = await AuthStore.GetUserFromCache();
-            InitializerHelper.Client.CurrentUser = user;
+            InitializerHelper.Client.CurrentUser = await AuthStore.GetUserFromCache(); 
                 if (vm != null) await vm.PopulateList();
 
         }
