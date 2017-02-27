@@ -33,7 +33,7 @@ namespace OmniList.ViewModels
             set
             {
                 removed = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Removed"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Removed)));
             }
 
         }
@@ -48,7 +48,7 @@ namespace OmniList.ViewModels
             set
             {
                 newItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewItem"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewItem)));
 
             }
 
@@ -64,7 +64,7 @@ namespace OmniList.ViewModels
             set
             {
                 isRefreshing = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRefreshing"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRefreshing)));
 
             }
 
@@ -80,7 +80,7 @@ namespace OmniList.ViewModels
             set
             {
                 groceryCollection = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GroceryCollection"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroceryCollection)));
             }
         }
 
@@ -95,7 +95,7 @@ namespace OmniList.ViewModels
             set
             {
                 selectedItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedItem"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedItem)));
             }
         }
 
@@ -113,7 +113,7 @@ namespace OmniList.ViewModels
         {
 
             await RefreshList();
-            var groceryList = await dbHelper.Get();
+            var groceryList = await dbHelper.Get<Grocery>();
             GroceryCollection = new ObservableCollection<Grocery>(groceryList.Where(x => x.Removed == false));
         }
 
@@ -143,16 +143,15 @@ namespace OmniList.ViewModels
 
         public async Task RemoveItem ()
         {
-
+            selectedItem.Removed = true;
             await dbHelper.Update(selectedItem);
             await PopulateList();
         }
 
         public async Task RefreshList()
         {
-            await dbHelper.Refresh();
+            await dbHelper.Refresh<Grocery>();
             IsRefreshing = false;
-
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
