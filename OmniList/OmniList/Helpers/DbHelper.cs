@@ -23,10 +23,9 @@ namespace OmniList.Helpers
         {
         }
 
-        public async Task Refresh<T> ()
+        public async Task Sync<T> ()
         {
-            try
-            {
+
                 if (!initialized)
                 {
                     await Initialize<T>();
@@ -42,12 +41,7 @@ namespace OmniList.Helpers
 
                 }
 
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.ToString());
-                throw;
-            }
+          
         }
 
         public async Task Initialize<T> ()
@@ -59,16 +53,8 @@ namespace OmniList.Helpers
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    try
-                    {
-                        await Client.GetSyncTable<T>().PullAsync(null, null, null, CancellationToken.None);
 
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e);
-                        throw;
-                    }
+                    await Client.GetSyncTable<T>().PullAsync(null, null, null, CancellationToken.None);
                 }
                 else
                 {
@@ -85,7 +71,7 @@ namespace OmniList.Helpers
             initialized = true;
         }
 
-        public async Task Insert<T> (T item)
+        public async Task<T> Insert<T> (T item)
         {
             if (!initialized)
             {
@@ -94,7 +80,9 @@ namespace OmniList.Helpers
             try
             {
                 await Client.GetSyncTable<T>().InsertAsync(item);
-                await Refresh<T>();
+
+                await Sync<T>();
+                return item;
             }
             catch (Exception e)
             {
@@ -110,7 +98,7 @@ namespace OmniList.Helpers
             {
                 await Initialize<T>();
             }
-
+            await Sync<T>();
             return await Client.GetSyncTable<T>().ToListAsync();
         }
 
@@ -122,7 +110,7 @@ namespace OmniList.Helpers
                 await Initialize<T>();
             }
             await Client.GetSyncTable<T>().DeleteAsync(item);
-            await Refresh<T>();
+            await Sync<T>();
         }
 
         public async Task Update<T> (T item)
@@ -133,8 +121,9 @@ namespace OmniList.Helpers
                 {
                     await Initialize<T>();
                 }
+          
                 await Client.GetSyncTable<T>().UpdateAsync(item);
-                await Refresh<T>();
+                await Sync<T>();
             }
             catch (Exception ex)
             {

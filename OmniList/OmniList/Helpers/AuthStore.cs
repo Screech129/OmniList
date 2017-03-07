@@ -17,10 +17,19 @@ namespace OmniList.Helpers
         private static string TokenKeyName = "token";
         private static string UserName = "username";
         public static void CacheAuthenticationToken (MobileServiceUser user)
-        {            
-            CrossSecureStorage.Current.SetValue(TokenKeyName, user.MobileServiceAuthenticationToken);
-            CrossSecureStorage.Current.SetValue(UserName, user.UserId);
-            Debug.WriteLine($"Cached auth token: {user.MobileServiceAuthenticationToken}");
+        {
+            try
+            {
+                CrossSecureStorage.Current.SetValue(TokenKeyName, user.MobileServiceAuthenticationToken);
+                CrossSecureStorage.Current.SetValue(UserName, user.UserId);
+                Debug.WriteLine($"Cached auth token: {user.MobileServiceAuthenticationToken}");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                throw;
+            }           
+           
         }
         public static async Task<MobileServiceUser> GetUserFromCache ()
         {
@@ -64,7 +73,6 @@ namespace OmniList.Helpers
             CrossSecureStorage.Current.DeleteKey(TokenKeyName);
             CrossSecureStorage.Current.DeleteKey(UserName);
         }
-
        
         public static bool IsTokenExpired (string token)
         {

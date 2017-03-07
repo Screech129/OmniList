@@ -22,8 +22,8 @@ namespace OmniList.Helpers
                 
                 var store = new MobileServiceSQLiteStore("localstore.db");
                 store.DefineTable<Grocery>();
-
-                await Client.SyncContext.InitializeAsync(store);
+                store.DefineTable<Category>();
+                await Client.SyncContext.InitializeAsync(store,new MobileServiceSyncHandler());
             }
             catch (Exception ex)
             {

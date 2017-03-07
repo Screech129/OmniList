@@ -12,12 +12,14 @@ using System.Windows.Input;
 using Microsoft.WindowsAzure.MobileServices;
 using OmniList.Helpers;
 using OmniList.Models;
+using OmniList.Views;
 using Xamarin.Forms;
 
 namespace OmniList.ViewModels
 {
     public class GroceryListViewModel: INotifyPropertyChanged
     {
+        private readonly INavigation navigation;
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly DbHelper dbHelper = new DbHelper();
 
@@ -38,23 +40,7 @@ namespace OmniList.ViewModels
 
         }
 
-        private string newItem;
-        public string NewItem
-        {
-            get
-            {
-                return newItem;
-            }
-            set
-            {
-                newItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewItem)));
-
-            }
-
-        }
-
-        private bool isRefreshing;
+   private bool isRefreshing;
         public bool IsRefreshing
         {
             get
@@ -70,6 +56,9 @@ namespace OmniList.ViewModels
 
         }
 
+        public ObservableCollection<GroupingHelper<string, Grocery>> GroceriesGrouped { get; set; } =
+            new ObservableCollection<GroupingHelper<string, Grocery>>();
+
         private ObservableCollection<Grocery> groceryCollection;
         public ObservableCollection<Grocery> GroceryCollection
         {
@@ -83,6 +72,8 @@ namespace OmniList.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroceryCollection)));
             }
         }
+
+        
 
         private Grocery selectedItem;
 
@@ -103,42 +94,38 @@ namespace OmniList.ViewModels
 
         public ICommand OnRefreshing { get; protected set; }
 
-        public GroceryListViewModel()
+        public GroceryListViewModel(INavigation navigation)
         {
             AddItem = new Command(async () => await AddItemToList());
             OnRefreshing = new Command(async () => await RefreshList());
+            this.navigation = navigation;
         }
 
         public async Task PopulateList ()
         {
+          
+                await RefreshList();
+                var groceryList = await dbHelper.Get<Grocery>();
+                var categoryList = await dbHelper.Get<Category>();
+                GroceryCollection = new ObservableCollection<Grocery>(groceryList.Where(y => y.Removed == false && y.UserId == User));
+                var sorted =
+                    GroceryCollection.OrderBy(gc => gc.Name)
+                                     .GroupBy(gc => gc.CategoryId)
+                                     .Select(gc => new GroupingHelper<string, Grocery>(categoryList.FirstOrDefault(c => c.Id == gc.Key).Name, gc))
+                                     .ToList();
 
-            await RefreshList();
-            var groceryList = await dbHelper.Get<Grocery>();
-            GroceryCollection = new ObservableCollection<Grocery>(groceryList.Where(x => x.Removed == false));
+                GroceriesGrouped.Clear();
+                foreach (var item in sorted)
+                {
+                    GroceriesGrouped.Add(item);
+                }
+           
         }
 
 
         public async Task AddItemToList ()
         {
-            var item = new Grocery()
-            {
-                Removed = false,
-                Name = NewItem,
-                CategoryId = "a11654fd-3652-45fc-9dfc-14202054ccca",
-                UserId = User
-
-            };
-            try
-            {
-                await dbHelper.Insert(item);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.ToString());
-                throw;
-            }
-           
-            await PopulateList();
+            await navigation.PushAsync(new AddEditGrocery());         
         }
 
         public async Task RemoveItem ()
@@ -150,8 +137,11 @@ namespace OmniList.ViewModels
 
         public async Task RefreshList()
         {
-            await dbHelper.Refresh<Grocery>();
-            IsRefreshing = false;
+           
+                await dbHelper.Sync<Grocery>();
+                IsRefreshing = false;
+           
+           
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

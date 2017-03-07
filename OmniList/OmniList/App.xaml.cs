@@ -23,7 +23,7 @@ namespace OmniList
             InitializeComponent();
             if (!AuthStore.IsUserLoggedIn())
             {
-                MainPage = new NavigationPage(new MainPage());
+                MainPage = new NavigationPage(new LoginPage());
             }
             else
             {

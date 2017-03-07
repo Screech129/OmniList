@@ -31,7 +31,7 @@ namespace omnilistService.Migrations
             //    );
             //
 
-            //context.Categories.AddOrUpdate(x=>x.Name, new Category() {Name = "Produce"});
+            context.Categories.AddOrUpdate(x=>x.Name, new Category() {Id = Guid.NewGuid().ToString(),Name = "Meat"});
         }
     }
 }

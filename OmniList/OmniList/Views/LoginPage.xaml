@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="OmniList.Views.MainPage"
+    x:Class="OmniList.Views.LoginPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:OmniList">
+    xmlns:local="clr-namespace:OmniList"
+    Title="Omnilist Log In">
     <StackLayout VerticalOptions="StartAndExpand">
+        <Label Text="Login with:" />
         <Button
             x:Name="AzureLogin"
             Clicked="LoginButton_OnClicked"
-            Text="New Account" />
+            Text="Email" />
         <Button
             x:Name="GoogleLogin"
             Clicked="LoginButton_OnClicked"

@@ -7,9 +7,9 @@ using Xamarin.Forms;
 
 namespace OmniList.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class LoginPage : ContentPage
     {
-        public MainPage ()
+        public LoginPage ()
         {
             InitializeComponent();
         }
@@ -23,7 +23,7 @@ namespace OmniList.Views
                 case "Google":
                      provider = MobileServiceAuthenticationProvider.Google;
                     break;
-                case "New Account":
+                case "Email":
                      provider = MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory;
                     break;
                 case "Facebook":
@@ -34,7 +34,7 @@ namespace OmniList.Views
             if (await InitializerHelper.LoginAsync(provider))
             {
                 await Task.Delay(100);
-                Navigation.InsertPageBefore(new NavigationPage(new GroceryList()), this);
+                Navigation.InsertPageBefore(new GroceryList(), this);
                 await Navigation.PopAsync();
             }
 

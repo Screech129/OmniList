@@ -3,22 +3,38 @@
     x:Class="OmniList.Views.GroceryList"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:viewModels="clr-namespace:OmniList.ViewModels;assembly=OmniList">
-    <ContentPage.BindingContext>
-        <viewModels:GroceryListViewModel />
-    </ContentPage.BindingContext>
+    xmlns:viewModels="clr-namespace:OmniList.ViewModels;assembly=OmniList"
+    Title="Omnilist">
+
     <StackLayout>
         <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
-            <Entry Text="{Binding NewItem}" WidthRequest="300" />
-            <Button Command="{Binding AddItem}" Text="Add" />
+            <Button Command="{Binding AddItem}" Text="+" />
+
         </StackLayout>
         <ListView
             x:Name="GroceryListView"
+            GroupDisplayBinding="{Binding Key}"
+            IsGroupingEnabled="True"
             IsPullToRefreshEnabled="True"
             IsRefreshing="{Binding IsRefreshing}"
-            ItemsSource="{Binding GroceryCollection}"
+            ItemsSource="{Binding GroceriesGrouped}"
             RefreshCommand="{Binding OnRefreshing}"
             SelectedItem="{Binding SelectedItem}">
+            <ListView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <ViewCell Height="25">
+                        <StackLayout
+                            Padding="5"
+                            BackgroundColor="#3498DB"
+                            VerticalOptions="FillAndExpand">
+                            <Label
+                                Text="{Binding Key}"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.GroupHeaderTemplate>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding Name}" />

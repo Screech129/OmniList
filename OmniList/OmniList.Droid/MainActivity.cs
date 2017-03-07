@@ -11,6 +11,7 @@ using Microsoft.WindowsAzure.MobileServices;
 using OmniList.Droid;
 using OmniList.Droid.Services;
 using OmniList.Helpers;
+using Plugin.Permissions;
 using Plugin.SecureStorage;
 using Xamarin.Auth;
 using Xamarin.Forms;
@@ -37,7 +38,13 @@ namespace OmniList.Droid
             LoadApplication(new App());
         }
 
-       
+        //public override void OnRequestPermissionsResult (int requestCode, string[] permissions, Permission[] grantResults)
+        //{
+        //    PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        //}
+
+
+
     }
 }
 

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="OmniList.Views.AddEditGrocery"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Add/Edit Grocery Item">
+    <StackLayout>
+        <Button Command="{Binding TakePicture}" Text="Take Photo" />
+        <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+            <Label Text="Name" />
+            <Entry Text="{Binding Name}" WidthRequest="300" />
+        </StackLayout>
+        <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+            <Label Text="Category" />
+            <Entry
+                Focused="VisualElement_OnFocused"
+                Text="{Binding CategoryName}"
+                WidthRequest="300" />
+        </StackLayout>
+        <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+            <Button Command="{Binding SaveGrocery}" Text="Save" />
+            <Button Command="{Binding CancelGrocery}" Text="Cancel" />
+        </StackLayout>
+
+        <StackLayout>
+            <Label Text="Description:" />
+            <Label Text="{Binding Description}" />
+        </StackLayout>
+        <StackLayout>
+            <Label Text="Caption:" />
+            <Label Text="{Binding Caption}" />
+        </StackLayout>
+        <StackLayout>
+            <Label Text="Photo Text: " />
+            <Label Text="{Binding PhotoText}" />
+        </StackLayout>
+    </StackLayout>
+
+</ContentPage>
